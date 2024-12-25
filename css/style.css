@@ -2,229 +2,341 @@
 
 /* Reset/Global styling */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f0f2f5;
-    color: #333;
-    padding: 20px;
-  }
-  
-  header {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  header h1 {
-    font-size: 2em;
-    color: #4a90e2;
-    animation: fadeInDown 1s ease-out;
-  }
-  
-  /* Bento Layout */
-  .bento-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-  }
-  
-  /* Ensure certain containers span full width */
-  .bento-item.full-width {
-    grid-column: span 2;
-  }
-  
-  .bento-item {
-    background-color: #fff;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    animation: fadeInUp 1s ease-out;
-  }
-  
-  .bento-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-  }
-  
-  .bento-item h2 {
-    margin-bottom: 15px;
-    color: #4a90e2;
-    font-size: 1.2em;
-  }
-  
-  /* Control Groups */
-  .control-group {
-    margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .control-group label {
-    flex: 1;
-    font-weight: bold;
-  }
-  
-  .control-group input[type="range"] {
-    flex: 2;
-    margin: 0 10px;
-  }
-  
-  #speedValue {
-    width: 30px;
-    text-align: center;
-    font-weight: bold;
-  }
-  
-  /* Buttons */
-  button, .nav-button {
-    padding: 10px 20px;
-    background-color: #4a90e2;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    text-decoration: none;
-    font-size: 0.9em;
-  }
-  
-  button:hover, .nav-button:hover {
-    background-color: #357ABD;
-    transform: scale(1.05);
-  }
-  
-  button:active, .nav-button:active {
-    transform: scale(0.95);
-  }
-  
-  .status-group p {
-    font-size: 1em;
-  }
-  
-  #statusMessage {
-    font-size: 1em;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #e7f3fe;
-    color: #31708f;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-  
-  .status-success {
-    background-color: #dff0d8;
-    color: #3c763d;
-  }
-  
-  .status-error {
-    background-color: #f2dede;
-    color: #a94442;
-  }
-  
-  /* Table Styling */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    animation: fadeIn 1s ease-out;
-  }
-  
-  table th, table td {
-    padding: 10px;
-    text-align: center;
-  }
-  
-  table th {
-    background-color: #4a90e2;
-    color: #fff;
-  }
-  
-  table tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  
-  .filter-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .filter-group label {
-    font-weight: bold;
-  }
-  
-  /* Canvas Styling */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f0f2f5;
+  color: #333;
+  padding: 20px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+header h1 {
+  font-size: 2.5em;
+  color: #4a90e2;
+  animation: fadeInDown 1s ease-out;
+}
+
+/* Bento Layout */
+.bento-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+/* Ensure certain containers span full width */
+.bento-item.full-width {
+  grid-column: span 2;
+}
+
+.bento-item {
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeInUp 1s ease-out;
+}
+
+.bento-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 24px rgba(0, 0, 0, 0.2);
+}
+
+.bento-item h2 {
+  margin-bottom: 20px;
+  color: #4a90e2;
+  font-size: 1.5em;
+  position: relative;
+}
+
+.bento-item h2::after {
+  content: '';
+  position: absolute;
+  width: 50px;
+  height: 4px;
+  background-color: #4a90e2;
+  bottom: -5px;
+  left: 0;
+  border-radius: 2px;
+}
+
+/* Control Groups */
+.control-group {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.control-group label {
+  flex: 1;
+  font-weight: bold;
+}
+
+.control-group input[type="range"] {
+  flex: 2;
+  margin: 0 10px;
+}
+
+#speedValue {
+  width: 40px;
+  text-align: center;
+  font-weight: bold;
+  background-color: #e7f3fe;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+/* Buttons */
+button, .nav-button {
+  padding: 12px 25px;
+  background-color: #4a90e2;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-decoration: none;
+  font-size: 1em;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+button:hover, .nav-button:hover {
+  background-color: #357ABD;
+  transform: scale(1.05);
+}
+
+button:active, .nav-button:active {
+  transform: scale(0.95);
+}
+
+.toggle-btn {
+  width: 100px;
+  height: 40px;
+  border-radius: 20px;
+  background-color: #a9a9a9;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-btn.On {
+  background-color: #4CAF50;
+}
+
+.toggle-btn.Off {
+  background-color: #f44336;
+}
+
+.status-group p {
+  font-size: 1.2em;
+}
+
+#statusMessage {
+  font-size: 1.1em;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #e7f3fe;
+  color: #31708f;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.status-success {
+  background-color: #dff0d8;
+  color: #3c763d;
+}
+
+.status-error {
+  background-color: #f2dede;
+  color: #a94442;
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  animation: fadeIn 1s ease-out;
+}
+
+table th, table td {
+  padding: 12px 15px;
+  text-align: center;
+}
+
+table th {
+  background-color: #4a90e2;
+  color: #fff;
+  position: sticky;
+  top: 0;
+}
+
+table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.filter-group label {
+  font-weight: bold;
+}
+
+.filter-group input[type="number"] {
+  width: 80px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.pagination-group {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.pagination-group button {
+  padding: 8px 20px;
+  background-color: #4a90e2;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.pagination-group button:hover {
+  background-color: #357ABD;
+  transform: scale(1.05);
+}
+
+.pagination-group button:active {
+  transform: scale(0.95);
+}
+
+/* Canvas Styling */
+.bento-item canvas {
+  width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 1 / 1; /* CSS Property untuk rasio aspek */
+  border-radius: 10px;
+  background-color: #f9f9f9;
+}
+
+/* Jika browser tidak mendukung aspect-ratio, gunakan padding-top trick */
+@supports not (aspect-ratio: 1 / 1) {
   .bento-item canvas {
-    width: 100% !important;
-    height: auto !important;
-    aspect-ratio: 1 / 1; /* CSS Property untuk rasio aspek */
+    width: 100%;
+    height: auto;
+    display: block;
+    position: relative;
   }
-  
-  /* Jika browser tidak mendukung aspect-ratio, gunakan padding-top trick */
-  @supports not (aspect-ratio: 1 / 1) {
-    .bento-item canvas {
-      width: 100%;
-      height: auto;
-      display: block;
-      position: relative;
-    }
-  
-    .bento-item canvas::before {
-      content: "";
-      display: block;
-      padding-top: 100%; /* 1:1 Aspect Ratio */
-    }
+
+  .bento-item canvas::before {
+    content: "";
+    display: block;
+    padding-top: 100%; /* 1:1 Aspect Ratio */
   }
-  
-  @keyframes fadeInDown {
-    from {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
   }
-  
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
   }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .bento-container {
-      grid-template-columns: 1fr;
-    }
-  
-    .bento-item.full-width {
-      grid-column: span 1;
-    }
-  
-    .control-group {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  
-    .control-group input[type="range"] {
-      width: 100%;
-      margin: 10px 0;
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .bento-container {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .bento-container {
+    grid-template-columns: 1fr;
+  }
+
+  .bento-item.full-width {
+    grid-column: span 1;
+  }
+
+  .control-group {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .control-group input[type="range"] {
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  .filter-group {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .pagination-group {
+    justify-content: center;
+  }
+
+  /* Penyesuaian untuk table-container pada layar kecil */
+  .table-container {
+    max-height: 300px; /* Sesuaikan tinggi sesuai kebutuhan */
+  }
+}
+
+/* Styling untuk .table-container */
+.table-container {
+  max-height: 400px; /* Tinggi maksimum untuk tabel */
+  overflow-y: auto;  /* Aktifkan scroll vertikal saat diperlukan */
+}
+
+/* Tambahkan scrollbar styling (Opsional) */
+.table-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.4);
+}

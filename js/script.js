@@ -1,6 +1,6 @@
 // html-css-js/js/script.js
 
-const BASE_URL = "http://192.168.138.147/UAP_PHP_PIRANTI/index.php"; // Ganti dengan IP komputer Anda
+const BASE_URL = "http://192.168.138.147/UAP_PHP_PIRANTI/api.php"; // Ganti dengan IP server Anda
 
 document.addEventListener("DOMContentLoaded", () => {
   if (document.title.includes("Dashboard")) {
@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// Inisialisasi Halaman Dashboard
+// Initialize Dashboard Page
 function initDashboard() {
   // Render Charts
   fetchLastHourData().then(data => {
@@ -18,16 +18,16 @@ function initDashboard() {
     renderHumidityChart(data);
   });
 
-  // Fetch dan Set Fan Settings
+  // Fetch and Set Fan Settings
   fetchFanSetting().then(setting => {
     updateFanControls(setting);
     updateStatusMessage(setting);
   });
 
-  // Fan On/Off Control
-  const fanOnOff = document.getElementById("fanOnOff");
-  fanOnOff.addEventListener("change", () => {
-    updateFanSetting();
+  // Fan On/Off Button
+  const fanOnOffBtn = document.getElementById("fanOnOffBtn");
+  fanOnOffBtn.addEventListener("click", () => {
+    toggleFan();
   });
 
   // Fan Speed Control
@@ -59,45 +59,48 @@ function initDashboard() {
   }, 10000);
 }
 
-// Inisialisasi Halaman Table
+// Initialize Table Page
 function initTablePage() {
   const filterBtn = document.getElementById("filterBtn");
   const showAllBtn = document.getElementById("showAllBtn");
   const dataTable = document.getElementById("dataTable").querySelector("tbody");
 
-  // Default load 1 jam terakhir
+  // Load initial 10 rows
   getAllData(1).then(data => {
-    renderTable(data, dataTable);
+    renderTable(data.slice(0, 10), dataTable);
   });
 
   filterBtn.addEventListener("click", () => {
     const hrs = document.getElementById("filterHour").value;
     if (hrs > 0) {
       getAllData(hrs).then(data => {
-        renderTable(data, dataTable);
+        renderTable(data.slice(0, 10), dataTable);
+        scrollToTop(); // Scroll ke atas setelah filter
       });
     }
   });
 
   showAllBtn.addEventListener("click", () => {
     getAllData().then(data => {
-      renderTable(data, dataTable);
+      renderTable(data, dataTable); // Render semua data tanpa slice
+      enableTableScroll();
+      scrollToTop(); // Scroll ke atas setelah render
     });
   });
 }
 
 // ----------------------------------------------
-// Fungsi Fetch Data dari Server
+// Fetch Data from Server
 // ----------------------------------------------
 
-// Fetch data 1 jam terakhir
+// Fetch last hour data
 function fetchLastHourData() {
   return fetch(`${BASE_URL}?action=getLastHourData`)
     .then(res => res.json())
     .catch(err => console.error(err));
 }
 
-// Fetch semua data atau berdasarkan jam
+// Fetch all data or based on hours
 function getAllData(hours = null) {
   if (hours) {
     return fetch(`${BASE_URL}?action=getAllData&hours=${hours}`)
@@ -110,36 +113,61 @@ function getAllData(hours = null) {
   }
 }
 
-// Fetch pengaturan kipas
+// Fetch fan settings
 function fetchFanSetting() {
   return fetch(`${BASE_URL}?action=getFanSetting`)
     .then(res => res.json())
     .catch(err => console.error(err));
 }
 
-// Update pengaturan kipas
+// Update fan settings
 function updateFanSetting() {
-  const fanOnOff = document.getElementById("fanOnOff").checked ? 1 : 0;
+  const fanOn = document.getElementById("fanOnOffBtn").textContent === "On" ? 1 : 0;
   const fanSpeed = document.getElementById("fanSpeed").value;
 
-  // Mengatur mode ke manual secara otomatis
+  // Automatically set mode to manual
   const mode = "manual";
 
-  const url = `${BASE_URL}?action=updateFanSetting&mode=${mode}&fanOn=${fanOnOff}&speed=${fanSpeed}`;
+  const url = `${BASE_URL}?action=updateFanSetting&mode=${mode}&fanOn=${fanOn}&speed=${fanSpeed}`;
   fetch(url)
     .then(res => res.json())
     .then(data => {
       console.log("Fan setting updated:", data);
-      updateStatusMessage({ mode: mode, fanOn: fanOnOff, speed: fanSpeed });
+      updateStatusMessage({ mode: mode, fanOn: fanOn, speed: fanSpeed });
     })
     .catch(err => console.error(err));
 }
 
-// Set mode manual atau auto
+// Toggle Fan On/Off
+function toggleFan() {
+  const fanOnOffBtn = document.getElementById("fanOnOffBtn");
+  const currentState = fanOnOffBtn.textContent === "On" ? 1 : 0;
+  const newState = currentState === 1 ? 0 : 1;
+
+  // Update button text
+  fanOnOffBtn.textContent = newState === 1 ? "On" : "Off";
+
+  // Update fan settings on server
+  const fanSpeed = document.getElementById("fanSpeed").value;
+
+  // Automatically set mode to manual
+  const mode = "manual";
+
+  const url = `${BASE_URL}?action=updateFanSetting&mode=${mode}&fanOn=${newState}&speed=${fanSpeed}`;
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      console.log("Fan toggled:", data);
+      updateStatusMessage({ mode: mode, fanOn: newState, speed: fanSpeed });
+    })
+    .catch(err => console.error(err));
+}
+
+// Set mode to manual or auto
 function setMode(mode) {
   const fanSetting = mode === "manual" ? {
     mode: "manual",
-    fanOn: document.getElementById("fanOnOff").checked ? 1 : 0,
+    fanOn: document.getElementById("fanOnOffBtn").textContent === "On" ? 1 : 0,
     speed: document.getElementById("fanSpeed").value
   } : {
     mode: "auto",
@@ -155,7 +183,7 @@ function setMode(mode) {
       updateStatusMessage(fanSetting);
       if (mode === "auto") {
         // Reset controls
-        document.getElementById("fanOnOff").checked = false;
+        document.getElementById("fanOnOffBtn").textContent = "Off";
         document.getElementById("fanSpeed").value = 0;
         document.getElementById("speedValue").textContent = "0";
       }
@@ -164,109 +192,117 @@ function setMode(mode) {
 }
 
 // ----------------------------------------------
-// Fungsi Render
+// Render Functions
 // ----------------------------------------------
 
-// Render Temperature Chart
+// Render Temperature Chart using Canvas API
 function renderTemperatureChart(data) {
-  const ctx = document.getElementById("temperatureChart").getContext("2d");
-
+  const canvas = document.getElementById("temperatureChart");
+  const ctx = canvas.getContext("2d");
   const labels = data.map(d => {
     const date = new Date(d.created_at);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   });
   const tempData = data.map(d => d.temperature);
 
-  new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: "Temperature (°C)",
-          data: tempData,
-          borderColor: "#FF6384",
-          backgroundColor: "rgba(255, 99, 132, 0.2)",
-          fill: true,
-          tension: 0.4
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: {
-        duration: 1000,
-        easing: 'easeOutQuart'
-      },
-      scales: {
-        x: {
-          title: {
-            display: true,
-            text: 'Time'
-          }
-        },
-        y: {
-          beginAtZero: true,
-          title: {
-            display: true,
-            text: 'Temperature (°C)'
-          }
-        }
-      }
+  // Set canvas size to maintain 1:1 ratio
+  canvas.width = canvas.parentElement.offsetWidth;
+  canvas.height = canvas.width;
+
+  // Clear canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Draw axes
+  ctx.beginPath();
+  ctx.moveTo(40, 10);
+  ctx.lineTo(40, canvas.height - 40);
+  ctx.lineTo(canvas.width - 10, canvas.height - 40);
+  ctx.strokeStyle = "#333";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Plot data
+  ctx.beginPath();
+  ctx.strokeStyle = "#FF6384";
+  ctx.lineWidth = 2;
+
+  const maxTemp = Math.max(...tempData, 40); // Assume max temperature 40°C
+  const minTemp = Math.min(...tempData, 0);  // Assume min temperature 0°C
+
+  tempData.forEach((temp, index) => {
+    const x = 40 + (canvas.width - 50) * (index / (tempData.length - 1));
+    const y = canvas.height - 40 - ((temp - minTemp) / (maxTemp - minTemp)) * (canvas.height - 50);
+    if (index === 0) {
+      ctx.moveTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
     }
   });
+
+  ctx.stroke();
+
+  // Draw labels
+  ctx.fillStyle = "#000";
+  ctx.font = "12px Arial";
+  ctx.fillText("0°C", 10, canvas.height - 40);
+  ctx.fillText(`${maxTemp}°C`, 10, 20);
+  ctx.fillText("Time", canvas.width / 2, canvas.height - 10);
+  ctx.fillText("Temperature", 10, 10);
 }
 
-// Render Humidity Chart
+// Render Humidity Chart using Canvas API
 function renderHumidityChart(data) {
-  const ctx = document.getElementById("humidityChart").getContext("2d");
-
+  const canvas = document.getElementById("humidityChart");
+  const ctx = canvas.getContext("2d");
   const labels = data.map(d => {
     const date = new Date(d.created_at);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   });
   const humData = data.map(d => d.humidity);
 
-  new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: "Humidity (%)",
-          data: humData,
-          borderColor: "#36A2EB",
-          backgroundColor: "rgba(54, 162, 235, 0.2)",
-          fill: true,
-          tension: 0.4
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: {
-        duration: 1000,
-        easing: 'easeOutQuart'
-      },
-      scales: {
-        x: {
-          title: {
-            display: true,
-            text: 'Time'
-          }
-        },
-        y: {
-          beginAtZero: true,
-          title: {
-            display: true,
-            text: 'Humidity (%)'
-          }
-        }
-      }
+  // Set canvas size to maintain 1:1 ratio
+  canvas.width = canvas.parentElement.offsetWidth;
+  canvas.height = canvas.width;
+
+  // Clear canvas
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Draw axes
+  ctx.beginPath();
+  ctx.moveTo(40, 10);
+  ctx.lineTo(40, canvas.height - 40);
+  ctx.lineTo(canvas.width - 10, canvas.height - 40);
+  ctx.strokeStyle = "#333";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Plot data
+  ctx.beginPath();
+  ctx.strokeStyle = "#36A2EB";
+  ctx.lineWidth = 2;
+
+  const maxHum = Math.max(...humData, 100); // Max humidity 100%
+  const minHum = Math.min(...humData, 0);   // Min humidity 0%
+
+  humData.forEach((hum, index) => {
+    const x = 40 + (canvas.width - 50) * (index / (humData.length - 1));
+    const y = canvas.height - 40 - ((hum - minHum) / (maxHum - minHum)) * (canvas.height - 50);
+    if (index === 0) {
+      ctx.moveTo(x, y);
+    } else {
+      ctx.lineTo(x, y);
     }
   });
+
+  ctx.stroke();
+
+  // Draw labels
+  ctx.fillStyle = "#000";
+  ctx.font = "12px Arial";
+  ctx.fillText("0%", 10, canvas.height - 40);
+  ctx.fillText(`${maxHum}%`, 10, 20);
+  ctx.fillText("Time", canvas.width / 2, canvas.height - 10);
+  ctx.fillText("Humidity", 10, 10);
 }
 
 // Render Table
@@ -289,7 +325,8 @@ function renderTable(data, tableBody) {
 
 // Update Fan Controls based on settings
 function updateFanControls(setting) {
-  document.getElementById("fanOnOff").checked = setting.fanOn === 1;
+  const fanOnOffBtn = document.getElementById("fanOnOffBtn");
+  fanOnOffBtn.textContent = setting.fanOn === 1 ? "On" : "Off";
   document.getElementById("fanSpeed").value = setting.speed;
   document.getElementById("speedValue").textContent = setting.speed;
   document.getElementById("currentMode").textContent = capitalizeFirstLetter(setting.mode);
@@ -299,7 +336,7 @@ function updateFanControls(setting) {
 function updateStatusMessage(setting) {
   const statusDiv = document.getElementById("statusMessage");
   statusDiv.textContent = `Fan is in ${capitalizeFirstLetter(setting.mode)} mode.`;
-  
+
   if (setting.mode === "manual") {
     statusDiv.classList.remove("status-error");
     statusDiv.classList.add("status-success");
@@ -312,4 +349,17 @@ function updateStatusMessage(setting) {
 // Capitalize first letter
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+// Enable scrolling in table container
+function enableTableScroll() {
+  const tableContainer = document.querySelector(".table-container");
+  tableContainer.style.maxHeight = "400px"; // Sesuaikan tinggi sesuai kebutuhan
+  tableContainer.style.overflowY = "auto";  // Pastikan scroll aktif
+}
+
+// Scroll tabel ke atas
+function scrollToTop() {
+  const tableContainer = document.querySelector(".table-container");
+  tableContainer.scrollTop = 0;
 }

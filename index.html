@@ -5,8 +5,6 @@
   <meta charset="UTF-8">
   <title>ESP32 Dashboard</title>
   <link rel="stylesheet" href="css/style.css">
-  <!-- Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <header>
@@ -15,29 +13,34 @@
   
   <!-- Bento Layout Container -->
   <div class="bento-container">
-    <!-- Container 1: Temperature Chart -->
-    <div class="bento-item">
+    <!-- Container 1: Fan On/Off Control -->
+    <div class="bento-item" style="grid-area: 3 / 1 / 4 / 3;">
+      <h2>Fan Control</h2>
+      <button id="fanOnOffBtn" class="toggle-button off">Off</button>
+    </div>
+    
+    <!-- Container 2: Temperature Chart -->
+    <div class="bento-item" style="grid-area: 1 / 2 / 2 / 4;">
       <h2>Temperature (Last 1 Hour)</h2>
       <canvas id="temperatureChart"></canvas>
     </div>
     
-    <!-- Container 2: Humidity Chart -->
-    <div class="bento-item">
+    <!-- Container 3: Humidity Chart -->
+    <div class="bento-item" style="grid-area: 1 / 5 / 2 / 7;">
       <h2>Humidity (Last 1 Hour)</h2>
       <canvas id="humidityChart"></canvas>
     </div>
     
-    <!-- Container 3: Fan On/Off Control -->
-    <div class="bento-item">
-      <h2>Fan On/Off</h2>
-      <div class="control-group">
-        <label for="fanOnOff">Fan:</label>
-        <input type="checkbox" id="fanOnOff">
+    <!-- Container 4: Current Mode -->
+    <div class="bento-item" style="grid-area: 3 / 3 / 4 / 6;">
+      <h2>Current Mode</h2>
+      <div class="status-group">
+        <p>Mode: <span id="currentMode">Auto</span></p>
       </div>
     </div>
     
-    <!-- Container 4: Fan Speed Control -->
-    <div class="bento-item">
+    <!-- Container 5: Fan Speed Control -->
+    <div class="bento-item" style="grid-area: 3 / 6 / 4 / 8;">
       <h2>Fan Speed</h2>
       <div class="control-group">
         <label for="fanSpeed">Speed:</label>
@@ -46,16 +49,8 @@
       </div>
     </div>
     
-    <!-- Container 5: Mode Indicator -->
-    <div class="bento-item">
-      <h2>Current Mode</h2>
-      <div class="status-group">
-        <p>Mode: <span id="currentMode">Auto</span></p>
-      </div>
-    </div>
-    
     <!-- Container 6: Mode Control -->
-    <div class="bento-item">
+    <div class="bento-item" style="grid-area: 4 / 1 / 5 / 4;">
       <h2>Mode Control</h2>
       <div class="control-group">
         <button id="setManualBtn">Set Manual</button>
@@ -64,13 +59,13 @@
     </div>
     
     <!-- Container 7: Status Notifications -->
-    <div class="bento-item">
+    <div class="bento-item" style="grid-area: 4 / 4 / 5 / 6;">
       <h2>Status</h2>
       <div id="statusMessage">Loading...</div>
     </div>
     
     <!-- Container 8: Navigation -->
-    <div class="bento-item">
+    <div class="bento-item" style="grid-area: 4 / 6 / 5 / 8;">
       <h2>Navigation</h2>
       <a href="table.html" class="nav-button">View Data Table</a>
     </div>
