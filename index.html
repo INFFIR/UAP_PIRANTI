@@ -1,0 +1,81 @@
+<!-- html-css-js/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ESP32 Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <h1>ESP32 Monitoring Dashboard</h1>
+  </header>
+  
+  <!-- Bento Layout Container -->
+  <div class="bento-container">
+    <!-- Container 1: Temperature Chart -->
+    <div class="bento-item">
+      <h2>Temperature (Last 1 Hour)</h2>
+      <canvas id="temperatureChart"></canvas>
+    </div>
+    
+    <!-- Container 2: Humidity Chart -->
+    <div class="bento-item">
+      <h2>Humidity (Last 1 Hour)</h2>
+      <canvas id="humidityChart"></canvas>
+    </div>
+    
+    <!-- Container 3: Fan On/Off Control -->
+    <div class="bento-item">
+      <h2>Fan On/Off</h2>
+      <div class="control-group">
+        <label for="fanOnOff">Fan:</label>
+        <input type="checkbox" id="fanOnOff">
+      </div>
+    </div>
+    
+    <!-- Container 4: Fan Speed Control -->
+    <div class="bento-item">
+      <h2>Fan Speed</h2>
+      <div class="control-group">
+        <label for="fanSpeed">Speed:</label>
+        <input type="range" id="fanSpeed" min="0" max="255" step="1" value="0">
+        <span id="speedValue">0</span>
+      </div>
+    </div>
+    
+    <!-- Container 5: Mode Indicator -->
+    <div class="bento-item">
+      <h2>Current Mode</h2>
+      <div class="status-group">
+        <p>Mode: <span id="currentMode">Auto</span></p>
+      </div>
+    </div>
+    
+    <!-- Container 6: Mode Control -->
+    <div class="bento-item">
+      <h2>Mode Control</h2>
+      <div class="control-group">
+        <button id="setManualBtn">Set Manual</button>
+        <button id="setAutoBtn">Set Auto</button>
+      </div>
+    </div>
+    
+    <!-- Container 7: Status Notifications -->
+    <div class="bento-item">
+      <h2>Status</h2>
+      <div id="statusMessage">Loading...</div>
+    </div>
+    
+    <!-- Container 8: Navigation -->
+    <div class="bento-item">
+      <h2>Navigation</h2>
+      <a href="table.html" class="nav-button">View Data Table</a>
+    </div>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

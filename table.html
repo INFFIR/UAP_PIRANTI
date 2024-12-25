@@ -1,0 +1,56 @@
+<!-- html-css-js/table.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sensor Data Table</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1>All Sensor Data</h1>
+  </header>
+  
+  <div class="bento-container">
+    <!-- Container 1: Filter Controls -->
+    <div class="bento-item full-width">
+      <h2>Filter Data</h2>
+      <div class="filter-group">
+        <label for="filterHour">Show data from last (hours): </label>
+        <input type="number" id="filterHour" min="1" value="1">
+        <button id="filterBtn">Filter</button>
+        <button id="showAllBtn">Show All</button>
+      </div>
+    </div>
+    
+    <!-- Container 2: Data Table -->
+    <div class="bento-item full-width">
+      <h2>Sensor Data</h2>
+      <table border="1" id="dataTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Temperature (°C)</th>
+            <th>Temperature Condition</th>
+            <th>Humidity (%)</th>
+            <th>Humidity Condition</th>
+            <th>Mode</th>
+            <th>Created At</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Data fetched by JS -->
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Container 3: Navigation -->
+    <div class="bento-item full-width">
+      <h2>Navigation</h2>
+      <a href="index.html" class="nav-button">Back to Dashboard</a>
+    </div>
+  </div>
+  
+  <script src="js/script.js"></script>
+</body>
+</html>
