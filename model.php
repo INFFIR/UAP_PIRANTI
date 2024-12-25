@@ -1,5 +1,5 @@
 <?php
-// php/model.php
+// UAP_PHP_PIRANTI/model.php
 header("Content-Type: application/json; charset=UTF-8");
 
 class Database {

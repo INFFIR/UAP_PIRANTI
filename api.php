@@ -1,5 +1,5 @@
 <?php
-// php/api.php
+// UAP_PHP_PIRANTI/api.php
 header("Content-Type: application/json; charset=UTF-8");
 require_once 'controller.php';
 
